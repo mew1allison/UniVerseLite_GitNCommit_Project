@@ -15,6 +15,7 @@ public class Student {
         program = null;
 
     }
+    //Aleena: Tip: You can do "public Student(){}" for zero argument constructors instead of initialising them to null. 
 
     //Argument Constructor
     public Student (String stname, String regnum, String program) {

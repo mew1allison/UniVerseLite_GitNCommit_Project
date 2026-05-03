@@ -52,6 +52,7 @@ public class Assignment {
             this.totalmarks = totalmarks;
         }else{
             this.totalmarks = 1;  //i thought that total marks can never be zero so I gave it a 1. However, there are other possibilities as this might be non credit? what do u think?
+            //Aleena: That is fine, but how will the teachers score the assignments? Hmm...I guess that's not required. But the Reportable interface marks departments based on 'performance' so we maybe we could just link it to attendance of faculty and students instead of marks.
         }
 
     }

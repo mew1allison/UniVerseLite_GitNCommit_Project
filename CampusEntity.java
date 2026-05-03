@@ -76,3 +76,4 @@ abstract public class CampusEntity {
 
 //the reason the setters are declared final is: When I call the setters within the argument constructor for initialization, a problem "Overridable Method Call in Constructor" arises. This is bcz the child might override these methods and that will cause problems.
 //However, in our system design the child will use the super keyword to call for the initialization of these parent attributes and has no need to override these setter methods as they serve only modificationa nd validation purpose. So they can easily be modified using the parent's setters without any need of them overriding these setters in the child classes.
+//Aleena : Done :)
