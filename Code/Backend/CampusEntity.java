@@ -413,7 +413,7 @@ class Lab extends AcademicUnit {
 }//end of lab class 
 
 //Facility
-class Facility extends CampusEntity implements Serializable{
+class Facility extends CampusEntity{
 
     //Data Members
     protected double maintenance_cost;
@@ -872,7 +872,6 @@ class TransportService extends ServiceUnit implements Schedulable{
     public void setTotalBuses(int totalBuses) {
         this.totalBuses = totalBuses;
     }
-
     
 }//end of TransportService class
 
@@ -912,8 +911,7 @@ class SecurityService extends ServiceUnit implements  Notifiable{
     
 }//end of SecurityService class
 
-
-
+//class HealthCenter
 class HealthCenter extends ServiceUnit implements Notifiable{
 
     private int doctorsAvailable;
@@ -949,11 +947,11 @@ class HealthCenter extends ServiceUnit implements Notifiable{
 
 }//end of HealthCenter class
 
-
+//class cAMPUS ZONE
 class CampusZone implements Serializable{
 
-    private int zoneID;
-    private String zoneName;
+    private int zoneID; //3 in AB3, 2 in AB2 
+    private String zoneName; //like Academic Block. Faculty block etc 
     private ArrayList<Facility> facilities;
     private ArrayList<ServiceUnit> serviceUnits;
     
@@ -965,8 +963,8 @@ class CampusZone implements Serializable{
     }
     
     public CampusZone(int zoneID, String zoneName) {
-        this.zoneID = zoneID;
-        this.zoneName = zoneName;
+        setZoneID(zoneID);
+        setZoneName(zoneName);
         facilities = new ArrayList<>();
         serviceUnits = new ArrayList<>();
     }
@@ -975,16 +973,24 @@ class CampusZone implements Serializable{
         return zoneID;
     }
 
-    public void setZoneID(int zoneID) {
-        this.zoneID = zoneID;
+    public final void setZoneID(int zoneID) {
+        if(zoneID > 0) {
+            this.zoneID = zoneID;
+        }else{
+            this.zoneID = 0;
+        }
     }
 
     public String getZoneName() {
         return zoneName;
     }
 
-    public void setZoneName(String zoneName) {
-        this.zoneName = zoneName;
+    public final void setZoneName(String zoneName) {
+        if(!zoneName.isBlank()) {
+            this.zoneName = zoneName;
+        }else{
+            this.zoneName = "Zone Unknown";
+        }
     }
     
     public void addFacilities(Facility f) {
@@ -1004,8 +1010,9 @@ class CampusZone implements Serializable{
 
 }//end of CampusZone 
 
+//class Campus Repository 
 class CampusRepository<T> implements Serializable {
-    private ArrayList<T> items;
+    public ArrayList<T> items; //should it be private like other class's datamembers? 
     
     public CampusRepository() {
         items = new ArrayList<>();
@@ -1042,4 +1049,4 @@ class CampusRepository<T> implements Serializable {
             System.out.println(items.get(i).toString());
         }
     }
-}
+}//end of campusrepository class 
