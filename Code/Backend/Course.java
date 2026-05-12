@@ -1,7 +1,8 @@
- import java.util.*;
+ import java.io.Serializable;
+import java.util.*;
 //Course Class
 
-public class Course {
+public class Course implements Serializable {
     
     //attributes
     private String courseName;
@@ -154,13 +155,13 @@ public class Course {
     //Add Student (Register student in a course)
     public void register(Student s1) {
           s.add(s1);
-          //System.out.println("Registration Successful.");
+          System.out.println("Registration Successful.");
     }
     
     //Remove student 
     public void removeStudent(Student s1) {
           s.remove(s1);
-          //System.out.println("Removal Successful.");
+          System.out.println("Removal Successful.");
     }
     
     //Number of students enrolled in this Course

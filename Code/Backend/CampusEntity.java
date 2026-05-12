@@ -72,7 +72,6 @@ abstract public class CampusEntity implements Serializable {
     }
 
     //Abstract method to calculate operational costs
-    //Aleena: For Academic Unit, I'm having two arraylists and count variables of students and equipment so that we can add/remove students and equipment and also count them to calculate cost. Logic: StudentCount * 500 (dummy values) + (for loop through equipment array , equipment[i].getPrice() sth); Let's not complicate this logic, ok?
     abstract public double calculateOperationalCost();
 
     @Override
@@ -81,11 +80,7 @@ abstract public class CampusEntity implements Serializable {
     }
 
 }//end of CampusEntity class
-
-//Aleena: So, I'll be making all child classes inside this file, 'CampusEntity.java', that's how I've been doing it. We can change it to a separate file later. I've left the sub-child classes empty, we can work on them later IA.
-//Aleena: Do review these please :)
-
-//Academic Unit
+ 
 //Academic Unit
 abstract class AcademicUnit extends CampusEntity{
     
@@ -1024,11 +1019,11 @@ class CampusZone implements Serializable{
 
 //class Campus Repository 
 class CampusRepository<T> implements Serializable {
-    public ArrayList<T> items; //should it be private like other class's datamembers? 
+    private ArrayList<T> items; //should it be private like other class's datamembers? //yes
     
     public CampusRepository() {
         items = new ArrayList<>();
-    }
+    }  
     
     public void add(T item) {
         items.add(item);

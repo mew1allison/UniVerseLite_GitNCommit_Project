@@ -1,5 +1,8 @@
 //Staff Class
-class Staff {
+
+import java.io.Serializable;
+
+class Staff implements Serializable {
       
     //Data Members
     private String name;

@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 //Student class
-public class Student {
+public class Student implements Serializable{
 
     //attributes
      private String stname; //Student name;

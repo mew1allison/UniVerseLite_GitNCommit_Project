@@ -70,20 +70,15 @@ abstract public class CampusEntity {
     }
 
     //Abstract method to calculate operational costs
-    //Aleena: For Academic Unit, I'm having two arraylists and count variables of students and equipment so that we can add/remove students and equipment and also count them to calculate cost. Logic: StudentCount * 500 (dummy values) + (for loop through equipment array , equipment[i].getPrice() sth); Let's not complicate this logic, ok?
     abstract public double calculateOperationalCost();
 
 }//end of CampusEntity class
-
-//Aleena: So, I'll be making all child classes inside this file, 'CampusEntity.java', that's how I've been doing it. We can change it to a separate file later. I've left the sub-child classes empty, we can work on them later IA.
-//Aleena: Do review these please :)
 
 //Academic Unit
 class AcademicUnit extends CampusEntity{
     //Data Members
     protected static int studentCount = 0;
     protected ArrayList<Student> students;
-    //protected static int equipmentCount = 0; I don't think this is needed
     protected ArrayList<Equipment> equipment;
     //Constructors
     public AcademicUnit() {
