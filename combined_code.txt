@@ -1,0 +1,1796 @@
+package Backend;
+import java.util.*;
+//Academic Unit
+public abstract class AcademicUnit extends CampusEntity{
+    
+    //Data Members
+    protected ArrayList<Equipment> equipment;
+    protected ArrayList<Student> students;
+
+    //Constructors
+    public AcademicUnit() {
+        equipment = new ArrayList<>(); 
+        students = new ArrayList<>();
+
+    }
+    public AcademicUnit(String name, String location, int entityID) {
+        super(name, location, entityID);
+        equipment = new ArrayList<>();
+        students = new ArrayList<>();
+    }
+    
+    public void addEquipment(Equipment equip) {
+        //No need to check equipment already present since we can have more than one equipment of same type
+        //Add equipment to arrayList
+        equipment.add(equip);  
+    }
+    
+    public void removeEquipment(Equipment equip) {
+        //Check if equipment is present
+        int index = equipment.indexOf(equip);
+        if(index != -1)
+        {
+            equipment.remove(equip);
+        }
+        else
+        {
+            System.out.println("Equipment Not Found!");
+        }
+    }
+    
+    public void addStudent(Student student)
+    {
+        //Check if student is not present already
+        int index = students.indexOf(student);
+        if(index == -1)
+        //Add student to arrayList
+       {    students.add(student);
+       }
+       else
+       {
+        System.out.println("Student Already Enrolled!");
+       }
+    }
+    
+    public void removeStudent(Student student)
+    {
+        //Check the index to find student (if exists)
+        int index = students.indexOf(student);
+        if(index != -1)
+        {   students.remove(student);
+        }
+        else
+        {
+            System.out.println("Student Not Found!");
+        }
+    }
+    
+    @Override
+    abstract public double calculateOperationalCost();
+    
+}//end of Academic Unit package Backend;
+import java.io.Serializable;
+
+public class Assignment implements Serializable {
+
+    //attributes
+    private int assignment_num;
+    private int totalmarks;
+    private String title; //the description of the Assignment
+    private String deadline; //the format DD/MM/YY (should we use it in this way or using month, year, day attributes??)
+
+    //Zero Argument Constructor
+    public Assignment(){
+        
+        assignment_num = 0;
+        totalmarks = 1;
+        title = null;
+        deadline = null;
+        
+    }
+
+    //Argument Constructor
+    public Assignment(int assignment_num, int totalmarks, String title, String deadline){
+        
+        setAssignmentNum(assignment_num);
+        setTotalmarks(totalmarks);
+        setTitle(title);
+        setDeadline(deadline);
+
+    }
+
+    //Setters (the teacher manages courses and students. The course class has multiple students and assignment objects. So the teacher might need setters for deadline extensions and other modifications)
+    public final void setTitle(String title) {
+        
+        if(!title.isBlank()){
+            this.title = title;
+        }else{
+            this.title = null;
+        }
+
+    }
+
+    public final void setDeadline(String deadline) {
+
+        if(!deadline.isBlank()){
+            this.deadline = deadline;
+        }else{
+            this.deadline = null;
+        }
+
+    }
+
+    public final void setTotalmarks(int totalmarks) {
+        
+        if(totalmarks > 0){
+            this.totalmarks = totalmarks;
+        }else{
+            this.totalmarks = 1;  
+        }
+
+    }
+    
+    public final void setAssignmentNum(int assignment_num) {
+        
+        if(assignment_num > 0) {
+            this.assignment_num = assignment_num;
+        }else{
+            this.assignment_num = 0;
+        }
+    }
+
+    //Getters
+    public int getTotalmarks() {
+        return totalmarks;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDeadline() {
+        return deadline;
+    }
+    
+    public int getAssignmentNum() {
+        return assignment_num;
+    }
+    
+    //display
+    @Override
+    public String toString() {
+          return("Assignment Number : " +assignment_num+"\nAssignment Title : " +title+"\nDeadline : " +deadline+"\nTotal Marks : " +totalmarks);
+    }
+
+}//end of Assignment class
+
+//Reason of using final with setters here. This class wont be extended and will not have a child class, it will exhibit relationship Courses class. There is no possibility of overriding it hence, final. package Backend;
+
+import java.io.*;
+public class Books implements Serializable{
+
+    //data members
+    private String bookname;
+    private String authorname;
+    private String edition;
+    private boolean isAvailable;
+      
+    //Zero Argument Constructor
+    public Books() {
+        bookname = "Unknown";
+        authorname = "Unknown";
+        edition = "Unknown";
+        isAvailable = true;
+    }
+      
+    //Argument Constructor
+    public Books(String bookname, String authorname, String edition) {
+          
+        setBookName(bookname);
+        setAuthorName(authorname);
+        setEdition(edition);
+        isAvailable = true;
+    }
+      
+    //Display Using To String method
+    @Override
+    public String toString() {
+        return ("Book Details : " +"\nBook : " +bookname+ "\nAuthor : " +authorname+ "\nEdition : " +edition+"\n Availability : " +isAvailable);
+    }
+      
+    //Setters
+    public final void setBookName(String bookname) {
+          
+        if(!bookname.isBlank()){
+              this.bookname = bookname;
+        }else{
+              this.bookname = "Book Title Unknown";
+        }
+    }
+      
+    public final void setAuthorName(String authorname) {
+          
+        if(!authorname.isBlank()){
+              this.authorname = authorname;
+        }else{
+              this.authorname = "Author Unknown";
+        }
+    }
+      
+    public final void setEdition(String edition) {
+          
+        if(!edition.isBlank()){
+              this.edition = edition;
+        }else{
+              this.edition = "No Record of Edition Found";
+        }
+    }
+
+    public void setAvailability(boolean isAvailable) {
+          this.isAvailable = isAvailable;
+    }
+      
+    //Getters
+    public String getBookName() {
+          return bookname;
+    }
+      
+    public String getAuthorName() {
+          return authorname;
+    }
+      
+    public String getEdition() {
+          return edition;
+    }
+
+    public boolean getAvailability() {
+          return isAvailable;
+    }
+
+}//end of books class
+package Backend;
+
+public class Cafeteria extends Facility{
+
+      
+    //data Members
+    private int fooditems; //food items present today
+    private double average_meal_cost; //number of meals consumed 
+      
+    //Zero Argument Constructor
+    public Cafeteria() {
+            super();
+            fooditems = 1;
+            average_meal_cost = 0;
+    }
+      
+    //Argument Constructor
+    public Cafeteria(String name, String location, int entityID, double maintenance_cost, double usage_frequency, int fooditems, double average_meal_cost) {
+            super(name, location, entityID, maintenance_cost, usage_frequency);
+            setFoodItems(fooditems);
+            setAverage_meal_cost(average_meal_cost);
+    }
+      
+    //Setters
+    public final void setFoodItems(int fooditems) {
+            if(fooditems > 1) {
+                  this.fooditems = fooditems;
+            }else{
+                  this.fooditems = 1;
+            }
+    }
+      
+    public final void setAverage_meal_cost(double average_meal_cost) {
+            if(average_meal_cost >= 0) {
+                  this.average_meal_cost = average_meal_cost;
+            }else{
+                  this.average_meal_cost = 0;
+            }
+    }
+      
+    //Getters
+    public int getfooditems() {
+            return fooditems;
+    }
+      
+    public double getaverage_meal_cost() {
+            return average_meal_cost;
+    }
+      
+    @Override
+    //calculateOperationalCost
+    public double calculateOperationalCost() {
+            return (maintenance_cost * usage_frequency) + (fooditems * average_meal_cost);
+    }
+      
+    @Override
+    public String toString() {
+            return super.toString() + ("\nUsage Frequency : " +usage_frequency);
+    }
+
+}//end of cafeteria class
+package Backend;
+import java.io.Serializable;
+import java.util.*;
+//This class will serve as wrapper class for ALL classes(array lists) in this program for easy read and write (no modifier datatypes)
+public class CampusData implements Serializable{
+    //ArrayLists for campus entities
+    ArrayList<Assignment> assignments = new ArrayList<>();
+    ArrayList<Student> students = new ArrayList<>();
+    ArrayList<Course> courses = new ArrayList<>();
+    ArrayList<Equipment> equipment = new ArrayList<>();
+    ArrayList<Staff> staff = new ArrayList<>();
+    ArrayList<Department> departments = new ArrayList<>();
+    ArrayList<Lab> labs = new ArrayList<>();
+    ArrayList<Classroom> classrooms = new ArrayList<>();
+    ArrayList<Cafeteria> cafeterias = new ArrayList<>();
+    ArrayList<Library> libraries = new ArrayList<>();
+    ArrayList<Books> books = new ArrayList<>();
+    ArrayList<Hostel> hostels = new ArrayList<>();
+    ArrayList<TransportService> transportServices = new ArrayList<>();
+    ArrayList<SecurityService> securityServices = new ArrayList<>();
+    ArrayList<HealthCenter> healthCenters = new ArrayList<>();
+    //Constructors
+    public CampusData() {
+    }
+}//base class CampusEntity
+package Backend;
+import java.io.Serializable;
+import java.util.*;
+public abstract class CampusEntity implements Serializable {
+
+    //datamembers and common attributes
+    protected String name;
+    protected int entityID;
+    protected String location;
+
+    //Zero Argument Constructor
+    public CampusEntity() {
+
+        name = null;
+        entityID = 0;
+        location = null;
+    
+    }
+
+    //Argument Constructor (uses setters to intialize - reason : instead of writing the same validation checks in both setters and argument constructor, write them in setter and call them in the argument constructor. This canot be vice versa as constructors are only called when an object is to be created.)
+    public CampusEntity(String name, String location, int entityID){
+
+        setName(name);
+        setLocation(location);
+        setEntityId(entityID);
+
+    }
+
+    //Setters (provided for admin as the admin will have full system access, so in case any attribute is to be modified it can be using setters) 
+    public final void setName(String name){
+
+        if(!name.isBlank()){
+            this.name = name;
+        }else{
+            this.name = null;
+        }
+
+    }
+
+    public final void setLocation(String location){
+
+        if(!location.isBlank()){
+            this.location = location;
+        }else{
+            this.location = null;
+        }
+
+    }
+
+    public final void setEntityId(int entityID){
+
+        if(entityID > 0){
+            this.entityID = entityID;
+        }else{
+            this.entityID = 0;
+        }
+
+    }
+
+    //Getters
+     public String getName() {
+        return name;
+    }
+
+    public int getEntityID() {
+        return entityID;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    //Abstract method to calculate operational costs
+    abstract public double calculateOperationalCost();
+
+    @Override
+    public String toString() {
+        return ("Name : " +name+ "\nLocation : " +location+ "\nEntity ID : " +entityID);
+    }
+
+}//end of CampusEntity class
+package Backend;
+
+import java.util.*;
+import java.io.*;
+//class Campus Repository 
+public class CampusRepository<T> implements Serializable {
+    private ArrayList<T> items; 
+    
+    public CampusRepository() {
+        items = new ArrayList<>();
+    }  
+    
+    public void add(T item) {
+        items.add(item);
+        System.out.println("Item added successfully!");
+    }
+    
+    public void remove(T item) {
+        if(items.contains(item)) {
+            items.remove(item);
+            System.out.println("Item removed successfully!");
+        } else {
+            System.out.println("Item not found!");
+        }
+    }
+    
+    public T get(int index) {
+        return items.get(index);
+    }
+    
+    public ArrayList<T> getAll() {
+        return items;
+    }
+    
+    public int size() {
+        return items.size();
+    }
+    
+    public void displayAll() {
+        for(int i=0; i<items.size(); i++) {
+            System.out.println(items.get(i).toString());
+        }
+    }
+}//end of campusrepository class package Backend;
+
+import java.util.*;
+import java.io.*;
+
+//class cAMPUS ZONE
+public class CampusZone implements Serializable{
+
+    private int zoneID; //3 in AB3, 2 in AB2 
+    private String zoneName; //like Academic Block. Faculty block etc 
+    private ArrayList<Facility> facilities;
+    private ArrayList<ServiceUnit> serviceUnits;
+    
+    public CampusZone() {
+        zoneID = 0;
+        zoneName = "Unknown";
+        facilities = new ArrayList<>();
+        serviceUnits = new ArrayList<>();
+    }
+    
+    public CampusZone(int zoneID, String zoneName) {
+        setZoneID(zoneID);
+        setZoneName(zoneName);
+        facilities = new ArrayList<>();
+        serviceUnits = new ArrayList<>();
+    }
+
+    public int getZoneID() {
+        return zoneID;
+    }
+
+    public final void setZoneID(int zoneID) {
+        if(zoneID > 0) {
+            this.zoneID = zoneID;
+        }else{
+            this.zoneID = 0;
+        }
+    }
+
+    public String getZoneName() {
+        return zoneName;
+    }
+
+    public final void setZoneName(String zoneName) {
+        if(!zoneName.isBlank()) {
+            this.zoneName = zoneName;
+        }else{
+            this.zoneName = "Zone Unknown";
+        }
+    }
+    
+    public void addFacilities(Facility f) {
+        facilities.add(f);
+    }
+
+    public void removeFacilities(Facility f) {
+        facilities.remove(f);
+    }
+
+    @Override
+    public String toString() {
+        return "CampusZone [zoneID=" + zoneID + ", zoneName=" + zoneName + ", facilities=" + facilities
+                + ", serviceUnits=" + serviceUnits + ", toString()=" + super.toString() + ", getZoneID()=" + getZoneID()
+                + ", getZoneName()=" + getZoneName() + "]";
+    }
+
+}//end of CampusZone package Backend;
+
+
+public class Classroom extends AcademicUnit{
+    //data members
+    private boolean isAvailable;
+    private int totalcapacity;
+
+    //Zero argument constructir
+    public Classroom(){
+        super();
+        isAvailable = true;
+        totalcapacity = 0;
+    }
+    
+    //argument Constructors
+    public Classroom(String name, String location, int entityID, boolean isAvailable, int totalcapacity) {
+        super(name, location, entityID);
+        setIsAvailable(isAvailable);
+        setCapacity(totalcapacity);
+    }
+    
+    //Setters
+    public final void setCapacity(int totalcapacity) {
+        if(totalcapacity > 0) {
+            this.totalcapacity = totalcapacity;
+        }else{
+            this.totalcapacity = 0;
+        }
+    }
+    
+    public final void setIsAvailable(boolean isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+    
+    //Getters
+    public int gettotalCapacity() {
+        return totalcapacity;
+    }
+    
+    public boolean getisAvailable() {
+        return isAvailable;
+    }
+    
+    
+    @Override
+    public void addStudent(Student s) {
+        if(students.size() < totalcapacity){
+            students.add(s);
+            System.out.println("Student Added");
+            if(students.size() == totalcapacity) {
+                isAvailable = false;
+            }
+        }else{
+            System.out.println("Class Capacity Full. Couldn't add Student");
+            isAvailable = false;
+        }
+    }
+    
+    @Override
+    public void removeStudent(Student s) {
+        if(students.contains(s)){
+            students.remove(s);
+            isAvailable = true;
+            System.out.println("Student removed");
+        }else{
+            System.out.println("No Student Found. Student Couldn't be Removed.");
+        }
+    }
+    
+    @Override
+    public double calculateOperationalCost() {
+        double eqprice = 0;
+        for(int i=0; i<equipment.size(); i++) {
+            eqprice += equipment.get(i).getPrice();
+        }
+        
+        return ( (students.size() * 500) + eqprice); //500(dummy) is the expenditure per student 
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + ("\nTotal Class Capacity : " +totalcapacity+"\nAvailable : " +isAvailable);
+    }
+}//end of classrom clas
+package Backend;
+import java.io.Serializable;
+import java.util.*;
+//Course Class
+
+public class Course implements Serializable {
+    
+    //attributes
+    private String courseName;
+    private String courseID;
+    private int credithours;
+    private ArrayList <Assignment> a;
+    private ArrayList <Student> s = new ArrayList<>();
+    private static int totalCourses = 0;
+    
+    //Zero Argument Constructor
+    public Course(){
+
+        courseName = "Unknown";
+        courseID = "UNKNOWN-000";
+        credithours = 0;
+        a = new ArrayList<>();
+        totalCourses++;
+    }
+    
+    //Argument Constructor
+    public Course(String courseName, String courseID, int credithours) {
+        
+        setCourseName(courseName);
+        setCourseID(courseID);
+        setCreditHours(credithours);
+        a = new ArrayList<>();
+        totalCourses++;
+        
+    } 
+    
+    //Setters
+    public final void setCourseName(String courseName) {
+        
+        if(!courseName.isBlank()){
+            this.courseName = courseName;
+        }else{
+            this.courseName = null;
+        }
+    }
+    
+    public final void setCourseID(String courseID) {
+        
+        if(!courseID.isBlank()){
+            this.courseID = courseID;
+        }else{
+            this.courseID = null;
+        }
+    }
+    
+    public final void setCreditHours(int credithours) {
+        
+        if(credithours > 0){
+            this.credithours = credithours;
+        }else{
+            this.credithours = 0;
+        }
+    }
+    
+    
+    //Getters
+    public String getCourseID(){
+        return courseID;
+    }
+    
+    public String getCourseName(){
+        return courseName;
+    }
+    
+    public int getCreditHours(){
+        return credithours;
+    }
+    
+    public ArrayList<Assignment> getAssignment() {
+        return a;
+    }
+    
+    //upload Assignment
+    public void uploadAssignment(Assignment a) {
+        this.a.add(a);
+        System.out.println("Assignment Uploaded Successfully!");
+    }
+    
+    //modify Deadline
+    public void modifyDeadline(int num) {
+          boolean isfound = false;
+        for(int i=0; i<a.size(); i++) {
+            if(a.get(i).getAssignmentNum() == num) {
+                    Scanner inp = new Scanner(System.in);
+                    System.out.print("Enter Deadline = ");
+                    a.get(i).setDeadline(inp.next());
+                    System.out.println("Deadline Modified");
+                    isfound = true;
+            }      
+        }
+        if(!isfound){
+              System.out.println("Could not find Assignment");
+        }
+     
+        
+    }
+    
+    //remove Assignment
+    public void removeAssignment(int num) {
+        boolean isfound = false;
+        for(int i=0; i<a.size(); i++) {
+            if(a.get(i).getAssignmentNum() == num) {
+                  this.a.remove(a.get(i));
+                  System.out.println("Assignment Removed Successfully.");
+                  isfound = true;
+            }      
+        }
+        if(!isfound){
+              System.out.println("Could not find Assignment");
+        }
+          
+    }
+    
+    //Display assignment
+    public void displayAssignmentDetails(int num) {
+          boolean isfound = false;
+          for(int i=0; i<a.size(); i++) {
+                  if(a.get(i).getAssignmentNum() == num) {
+                        System.out.println(a.get(i).toString());
+                        isfound = true;
+                  } 
+            }
+            if(!isfound){
+              System.out.println("Could not find Assignment");
+            }
+    }
+    
+    public int totalAssignments() {
+          return a.size();
+    }
+    
+    //Display Course Info 
+    @Override
+    public String toString() {
+          return ("Course Details :" +"\nCourse Name : " +courseName+"\nCourse ID : " +courseID+"\nCredit Hours : " +credithours+"\nTotal Assignments : " +a.size()+"\nTotal Students Enrolled : " +s.size());
+    }
+    
+    //DisplayAllAssignments
+    public void displayAll() {
+          for(int i=0; i< a.size(); i++) {
+                System.out.println(a.get(i).toString());
+                System.out.println();
+          }
+    }
+    
+    //Add Student (Register student in a course)
+    public void register(Student s1) {
+          s.add(s1);
+          System.out.println("Registration Successful.");
+    }
+    
+    //Remove student 
+    public void removeStudent(Student s1) {
+          s.remove(s1);
+          System.out.println("Removal Successful.");
+    }
+    
+    //Number of students enrolled in this Course
+    public int getNumberOfEnrolledStudents() {
+          return s.size();
+    }
+    
+    //Display students enrolled in this Course
+    public void displayEnrolledStudents() {
+          System.out.println("Details of Students Enrolled in " +courseName);
+          for(int i=0; i<s.size(); i++) {
+                System.out.println();
+                System.out.println(s.get(i).toString());
+                System.out.println();
+          }
+    }
+    
+    //Getter for total courses
+    public static int getTotalCourses() {
+          return totalCourses;
+    }
+    
+    public static void displayTotalCourses () {
+        System.out.println("Total Courses = " +totalCourses);
+    }
+
+    ArrayList<Student> getStudentList() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+}//end of Course Classpackage Backend;
+
+import java.util.*;
+//Department class
+public class Department extends AcademicUnit implements Reportable{
+       
+    //data member
+    private ArrayList<Course> courses;
+    
+    public Department() {
+        super();
+        courses = new ArrayList<>();
+    }
+    
+    public Department(String name, String location, int entityID) {
+         super(name, location, entityID);
+         courses = new ArrayList<>();
+    }
+    
+    //Add courses
+    public void addCourse(Course c) {
+        courses.add(c);
+        System.out.println("Course Added Successfully");
+    }
+    
+    //Remove Courses 
+    public void removeCourse(Course c) {
+        courses.remove(c);
+        System.out.println("Course Removed Successfully");
+    }
+    
+    //total courses in the department 
+    public int getTotalCoursesinDep() {
+        return courses.size();
+    }
+    
+    //total students enrolled in the department
+    public int totalStudentsinDep() {
+        int totalstudents = 0;
+        boolean counted;
+        
+        //Goes through the course present at index in the course list 
+        for(int i=0; i<courses.size(); i++) {
+            //Obtains the student enrolled list of that course and stores it in the enrolled student arraylist 
+            ArrayList<Student> enrolled = courses.get(i).getStudentList();
+            //Loops through each student enrolled in that course and sets the boolean false for all of them telling the system that they havent been counted means they are unique students with who hadnt been counted before
+            for(int j=0; j<enrolled.size(); j++){
+                counted = false;
+                
+                //checks the course list of that course to see if that student was counted before or not if counted the boolean becomes true
+                for(int k=0; k<i; k++){
+                    if(courses.get(k).getStudentList().contains(enrolled.get(j))) {
+                        counted = true;
+                    }
+                }
+                
+                //if the student wasnt counted before then it is added to the total student otherwise it isnt added.
+                if(!counted){
+                    totalstudents++;
+                }
+            }
+        }
+        return totalstudents;
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + ("\nTotal Courses Offered = " +getTotalCoursesinDep()+"\nTotal Students Enrolled in Department = " +totalStudentsinDep());
+    }
+    
+    @Override
+    public double calculateOperationalCost() {
+        double cost = 0;
+        cost += totalStudentsinDep() * 500; // students from courses
+        for(int i = 0; i < equipment.size(); i++) {
+            cost += equipment.get(i).getPrice(); // equipment added directly
+        }
+        return cost;
+    }
+
+    @Override
+    public void generateReport() {
+        System.out.println("DEPARTMENT PERFORMANCE REPORT");
+        System.out.println(this.toString());
+        System.out.println("Total Equipments : " +equipment.size());
+        System.out.println("Operational Cost : " +calculateOperationalCost());
+    }
+
+}//end of Department class package Backend;
+import java.io.Serializable;
+
+public class Equipment implements Serializable {
+
+    //Data Members
+    private String name;
+    private int equip_ID;
+    private double price;
+
+    //Constructors
+
+    public Equipment() {
+
+        name = "Unknown";
+        equip_ID = 0;
+        price = 0;
+
+    }
+
+    public Equipment(String name, int equip_ID, double price) {
+
+        setName(name);
+        setEquip_ID(equip_ID);
+        setPrice(price);
+
+    }
+    //Getters Setters
+
+    public String getName() {
+        return name;
+    }
+
+    public final void setName(String name) {
+
+        if(!name.isBlank()){
+            this.name = name;
+        }else{
+            this.name = "Unknown";
+        }
+
+    }
+    public int getEquip_ID() {
+        return equip_ID;
+    }
+    public final void setEquip_ID(int equip_ID) {
+        
+        if(equip_ID > 0) {
+            this.equip_ID = equip_ID;
+        }else{
+            this.equip_ID = 0;
+        }
+
+    }
+    public double getPrice() {
+        return price;
+    }
+    public final void setPrice(double price) {
+        
+        if(price > 0){
+            this.price = price;
+        }else{
+            this.price = 0;
+        }
+
+    }
+
+    //Display
+    //Aleena: Let's use this type of toString format for now since thats how the Source Action creates it
+    @Override
+    public String toString() {
+        return "Equipment [name=" + name + ", equip_ID=" + equip_ID + ", price=" + price + "]";
+    }
+    
+}//end of equipment class 
+package Backend;
+
+//Facility
+public class Facility extends CampusEntity{
+
+    //Data Members
+    protected double maintenance_cost;
+    protected double usage_frequency;
+
+    //tracking system's totalfacilityusage
+    protected static double totalfacilityusage = 0; 
+
+    //Constructors
+    public Facility() {}
+
+    public Facility(String name, String location, int entityID, double maintenance_cost, double usage_frequency) {
+        super(name, location, entityID);
+        setMaintenance_cost(maintenance_cost);
+        setUsage_frequency(usage_frequency);
+    }
+
+    //Getters Setters
+    public double getMaintenance_cost() {
+        return maintenance_cost;
+    }
+
+    public final void setMaintenance_cost(double maintenance_cost) {
+        if(maintenance_cost > 0) {
+            this.maintenance_cost = maintenance_cost;
+        }else{
+            this.maintenance_cost = 0;
+        }
+        
+    }
+
+    public double getUsage_frequency() {
+        return usage_frequency;
+    }
+
+    public final void setUsage_frequency(double usage_frequency) {
+        if(usage_frequency > 0) {
+            this.usage_frequency = usage_frequency;
+        }else{
+            this.usage_frequency = 0;
+        }
+
+        totalfacilityusage += usage_frequency;
+    }
+    
+    //static methods
+    public static double getTotalFacilityUsage() {
+          return totalfacilityusage;
+    }
+
+    public static void displayTotalFacilityUsage() {
+        System.out.println("Total Facility Usage = " +totalfacilityusage);
+    }
+    
+    //Methods
+    @Override
+    public double calculateOperationalCost() {
+        return maintenance_cost * usage_frequency;
+    }
+
+}//end of facility classpackage Backend;
+import java.io.*;
+import java.util.*;
+
+public class FileHandler {
+
+    //1) Write to File
+    public void saveToFile(CampusData data, String filename)
+    {
+        File file = new File(filename);
+        try{
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(data);
+            oos.close();
+        }
+        catch(FileNotFoundException e){ System.err.println("File Not Found."); e.printStackTrace();}
+        catch(IOException e){ e.printStackTrace();}
+    }
+    //2) Read from File
+    public CampusData loadOnStartup(String filename)
+    {
+        try{
+            File file = new File(filename);
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            CampusData data = (CampusData)ois.readObject();
+            ois.close();
+            return data;
+        }
+        catch(FileNotFoundException e){ System.err.println("File Not Found."); e.printStackTrace();}
+        catch(IOException e){ e.printStackTrace();}
+        catch(ClassNotFoundException e){ e.printStackTrace();}
+        //In case of error
+        return new CampusData();
+    }
+    }
+
+package Backend;
+//class HealthCenter
+public class HealthCenter extends ServiceUnit implements Notifiable{
+
+    private int doctorsAvailable;
+    
+    public HealthCenter() {
+         super(); 
+         doctorsAvailable = 0; 
+    }
+    
+    public HealthCenter(String name, String location, int entityID, int doctorsAvailable) {
+        super(name, location, entityID);
+        setDoctorsAvailable(doctorsAvailable);
+    }
+
+    @Override
+    public void sendNotification(String message) {
+        System.out.println("Notification !");
+        System.out.println(message);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ("\nDoctors Available : " +doctorsAvailable);
+    }
+
+    public int getDoctorsAvailable() {
+        return doctorsAvailable;
+    }
+
+    public final void setDoctorsAvailable(int doctorsAvailable) {
+        if(doctorsAvailable > 0) {
+            this.doctorsAvailable = doctorsAvailable;
+        }else{
+            this.doctorsAvailable = 0;
+        }
+        
+    }
+
+}//end of HealthCenter class
+
+package Backend;
+
+public class Hostel extends Facility{
+      
+    //data Members
+    private boolean[] isOccupied = new boolean[100];
+      
+    //Zero Argument Constructor
+    public Hostel() {
+    }
+      
+    //Argument Constructor
+    public Hostel(String name, String location, int entityID, double maintenance_cost, double usage_frequency, int totalroom) {
+            super(name, location, entityID, maintenance_cost, usage_frequency);
+            isOccupied = new boolean[totalroom];
+    }
+      
+    //Occupy Room
+    public void occupy(int room) {
+            if(room >= 0 && room < isOccupied.length) {
+                  isOccupied[room] = true;
+            }else{
+                  System.out.println("Cannot Occupy Room.");
+            }
+    }
+      
+    //Vacant room
+    public void vacant(int room) {
+            if(room >= 0 && room < isOccupied.length) {
+                  isOccupied[room] = false;
+            }else{
+                  System.out.println("Could not vacant room. Try again");
+                  
+            }
+    }
+      
+    //Hostel data calculation 
+    public int occupiedrooms() {
+            int occupiedrooms = 0;
+            for(int i=0; i<isOccupied.length; i++) {
+                  if(isOccupied[i]) {
+                        occupiedrooms++;
+                  }
+            }
+            return occupiedrooms;
+    }
+      
+    @Override
+    public double calculateOperationalCost() {
+            return (maintenance_cost * usage_frequency) + (occupiedrooms() * 20000);
+    }
+      
+    @Override
+    public String toString() {
+        return super.toString() + ("\nTotal Rooms : " +isOccupied.length+ "\nOccupied Rooms : " +occupiedrooms()+ "\nUnoccupied Rooms : " +(isOccupied.length - occupiedrooms() ) );
+    }
+}//end of hostel class
+package Backend;
+
+ //class Lab
+public class Lab extends AcademicUnit {
+    
+    //data members
+    private boolean isfree;
+    private int totalcapacity;
+
+    //Zero argument constructir
+    public Lab(){
+        super();
+        isfree = true;
+        totalcapacity = 0;
+    }
+    
+    //argument Constructors
+    public Lab(String name, String location, int entityID, boolean isfree, int totalcapacity) {
+        super(name, location, entityID);
+        setIsFree(isfree);
+        setCapacity(totalcapacity);
+    }
+    
+    //Setters
+    public final void setCapacity(int totalcapacity) {
+        if(totalcapacity > 0) {
+            this.totalcapacity = totalcapacity;
+        }else{
+            this.totalcapacity = 0;
+        }
+    }
+    
+    public final void setIsFree(boolean isfree) {
+        this.isfree = isfree;
+    }
+    
+    //Getters
+    public int gettotalCapacity() {
+        return totalcapacity;
+    }
+    
+    public boolean getisFree() {
+        return isfree;
+    }
+    
+    @Override
+    public void addStudent(Student s) {
+        if(students.size() < totalcapacity){
+            students.add(s);
+            System.out.println("Student Added");
+            if(students.size() == totalcapacity) {
+                isfree = false;
+            }
+        }else{
+            System.out.println("Class Capacity Full. Couldn't add Student");
+            isfree = false;
+        }
+    }
+    
+    @Override
+    public void removeStudent(Student s) {
+        if(students.contains(s)){
+            students.remove(s);
+            isfree = true;
+            System.out.println("Student removed");
+        }else{
+            System.out.println("No Student Found. Student Couldn't be Removed.");
+        }
+    }
+    
+    @Override
+    public double calculateOperationalCost() {
+        double eqprice = 0;
+        for(int i=0; i<equipment.size(); i++) {
+            eqprice += equipment.get(i).getPrice();
+        }
+        
+        return ( (students.size() * 500) + eqprice); //500 is a dummt value or the expenditure per student 
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + ("\nTotal Class Capacity : " +totalcapacity+"\nCurrently Free : " +isfree);
+    }
+
+}//end of lab class 
+
+package Backend;
+import java.util.*;
+
+public class Library extends Facility implements Reportable{
+    
+    //data members 
+    protected ArrayList <Books> b1;
+      
+    //Zero Argument Constructor
+    public Library(){
+        super();
+        b1 = new ArrayList<>();
+    }
+      
+    //Argument Constructor
+    public Library(String name, String location, int entityID, double maintenance_cost, double usage_frequency){
+        super(name, location, entityID, maintenance_cost, usage_frequency);
+        b1 = new ArrayList<>();
+    }
+      
+    //Displaying all books
+    public void displayAll(){
+        for(int i=0; i<b1.size(); i++) {
+                System.out.println((i+1)+". " +(b1.get(i)).toString());
+                System.out.println();
+        }
+    }
+
+      
+    //Displaying the total books present in the library
+    public int totalBooks() {
+        return b1.size();
+    }
+      
+    //Borrow books
+    public void borrowBook(Books b) {
+        System.out.println(b.getBookName() + " borrowed from Library.");
+        b.setAvailability(false);
+    }
+      
+    //Return books
+    public void returnBook(Books b) {
+        System.out.println(b.getBookName() + " returned to Library");
+        b.setAvailability(true);
+    }
+      
+    //add books
+    public void add(Books b){
+        b1.add(b);
+    }
+      
+    //remove Books
+    public void remove(Books b) {
+        b1.remove(b);
+    }
+
+    //calculating available and borrowed books
+    public void booksdata() {
+            int available = 0;
+            int borrowed = 0;
+            for(int i=0; i<b1.size(); i++) {
+                  if(b1.get(i).getAvailability()){
+                        available++;
+                  }else{
+                        borrowed++;
+                  }
+            }
+            System.out.println("Available Books = " +available);
+            System.out.println("Borrowed Book = " +borrowed);
+    }
+
+    @Override
+    //Calculate Operational costs
+    public double calculateOperationalCost(){
+        return (maintenance_cost * usage_frequency) + (b1.size() * 150);
+
+        //multiplying the number of books with a dummy value like 150. and then adding it to the operational costs.
+    }
+
+    @Override
+    //toString method
+    public String toString() {
+        return super.toString() + ("\nTotal Books in Library : " +b1.size());
+    }
+    
+    @Override
+    public void generateReport() {
+        System.out.printf("%50s", "Usage Stats for Library");
+        System.out.println();
+        System.out.println("Location : " +location);
+        System.out.println("Entity ID : " +entityID);
+        System.out.println("Usage Information");
+        System.out.println("Maintenance cost : " +maintenance_cost);
+        System.out.println("Usage Frequency : " +usage_frequency);
+        System.out.println("Total Books in Library = " +b1.size());
+        booksdata();
+        System.out.println("Operational Cost : " +calculateOperationalCost());
+    }
+
+}//end of library classpackage Backend;
+//interface notifiable
+
+public interface Notifiable {
+
+    //to send notifications to SecurityService, HealthCenter and Admin
+    void sendNotification(String message);
+
+}//end of interface Notifiablepackage Backend;
+//interface Reportable
+
+public interface Reportable {
+
+    //generates reports for Library (regarding usage stats) and Department regarding performance
+    void generateReport();
+
+}//end of reportable interfacepackage Backend;
+//interface Schedulable
+
+public interface Schedulable {
+
+    //generates Schedules used by Courses and TransportService
+    void generateSchedule();
+
+}//end of interface Schedulablepackage Backend;
+
+public class SecurityService extends ServiceUnit implements  Notifiable{
+    
+    private String alertLevel;
+    
+    public SecurityService() { 
+        super(); 
+        alertLevel = "Low"; 
+    }
+    
+    public SecurityService(String name, String location, int entityID, String alertLevel) {
+        super(name, location, entityID);
+        this.alertLevel = alertLevel;
+    }
+
+    public String getAlertLevel() {
+        return alertLevel;
+    }
+
+    public void setAlertLevel(String alertLevel) {
+        this.alertLevel = alertLevel;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ("\nAlert Level = " +alertLevel);
+    }
+    
+    @Override
+    public void sendNotification(String message) {
+        System.out.println("Notification !");
+        System.out.println(message);
+    }
+    
+}//end of SecurityService class
+package Backend;
+
+import java.util.*;
+//Service Unit
+public class ServiceUnit extends CampusEntity{
+
+    //Data Members
+    protected ArrayList<Staff> staff_members;
+    
+    //Constructors
+    public ServiceUnit(){
+        staff_members = new ArrayList<>();
+    }
+
+    public ServiceUnit(String name, String location, int entityID) {
+        super(name, location, entityID);
+        staff_members = new ArrayList<>();
+    }
+
+    //Methods to add staff
+    public void addStaff(Staff member)
+    {
+        //If not already present
+        int index = staff_members.indexOf(member);
+        if(index == -1)
+        {
+            staff_members.add(member);
+        }
+        else
+        {
+            System.out.println("Staff Member is Already Employed Here!");
+        }
+    }
+
+
+    public void removeStaff(Staff member)
+    {
+        //Check if member is present
+        int index = staff_members.indexOf(member);
+        if(index != -1)
+        {
+            staff_members.remove(member);
+        }
+        else
+        {
+            System.out.println("Staff Member does not Exist!");
+        }
+    }
+
+    //Method Override
+    @Override
+    public double calculateOperationalCost()
+    {
+        double cost = 0;
+        for(int i = 0; i < staff_members.size(); i++)
+        {
+            cost += (staff_members.get(i).getSalaryPerHour()) * (staff_members.get(i).getService_hours());
+        }
+        return cost;
+    }
+    
+}//end of serviceunit class
+//Staff Class
+package Backend;
+import java.io.Serializable;
+
+public class Staff implements Serializable {
+      
+    //Data Members
+    private String name;
+    private double salaryPerHour;
+    private double service_hours;
+    
+    //Constructors
+    public Staff() {
+          name = "Unknown";
+          salaryPerHour = 0;
+          service_hours = 0;
+    }
+    
+    public Staff(String name, double salaryPerHour, double service_hours) {
+        setName(name);
+        setSalaryPerHour(salaryPerHour);
+        setService_hours(service_hours);
+    }
+    
+    //Getter Setters
+    public String getName() {
+        return name;
+    }
+    public final void setName(String name) {
+          if(!name.isBlank()) {
+                this.name = name;
+          }else{
+                this.name = "Unknown";
+          }
+    }
+    public double getSalaryPerHour() {
+        return salaryPerHour;
+    }
+    public final void setSalaryPerHour(double salaryPerHour) {
+          if(salaryPerHour > 0) {
+                this.salaryPerHour = salaryPerHour;
+          }else{
+                this.salaryPerHour = 0;
+          }
+        
+    }
+    public double getService_hours() {
+        return service_hours;
+    }
+    
+    public final void setService_hours(double service_hours) {
+        if(service_hours > 0) {
+              this.service_hours = service_hours;
+        }else{
+              this.service_hours = 0;
+        }
+    }
+    
+    @Override
+    public String toString() {
+            return ("Staff Name : " + name + "\nSalary Per Hour : " + salaryPerHour + "\nService Hours : " + service_hours);
+    }
+   
+}//end of staff class package Backend;
+import java.io.Serializable;
+import java.util.*;
+//Student class
+public class Student implements Serializable{
+
+    //attributes
+     private String stname; //Student name;
+     private String regnum; //FA25-BCS-005 format
+     private String program; //Computer Science 
+     private ArrayList <Course> c = new ArrayList<>();
+     private static int totalStudents = 0;
+
+     //Zero Argument Constructor
+     public Student() {
+
+         stname = "Unknown";
+         regnum = "No Registration Number Assigned";
+         program = "Unknown";
+         totalStudents++;
+
+     }
+
+     //Argument Constructor
+     public Student (String stname, String regnum, String program) {
+
+         setStname(stname);
+         setRegnum(regnum);
+         setProgram(program);
+         totalStudents++;
+
+     }
+
+    //Setters
+    public final void setStname(String stname) {
+
+        if(!stname.isBlank()){
+            this.stname = stname;
+        }else{
+            this.stname = "Unknown";
+        }
+        
+    }
+
+    public final void setRegnum(String regnum) {
+
+        if(!regnum.isBlank()){
+            this.regnum = regnum;
+        }else{
+            this.regnum = "No Registration Number Assigned";
+        }
+
+    }
+
+    public final void setProgram(String program) {
+        
+        if(!program.isBlank()){
+            this.program = program;
+        }else{
+            this.program = "Unknown";
+        }
+
+    }
+
+    //Getters
+    public String getStname() {
+        return stname;
+    }
+
+    public String getRegnum() {
+        return regnum;
+    }
+
+    public String getProgram() {
+        return program;
+    }
+    
+    public static int getTotalStudents() {
+        return totalStudents;
+    }
+    
+    public static void displayTotalStudents() {
+        System.out.println("Total Students = " +totalStudents);
+    }
+
+    public ArrayList<Course> getCourseList() {
+        return c;
+    }
+    
+    //Display Info
+    @Override
+    public String toString() {
+          return ("Student Name : " +stname+"\nRegistration Number : " +regnum+"\nProgram : " +program);
+    }
+    
+    //Register in course 
+    public void enroll(Course c1) {
+          c.add(c1);
+          c1.register(this);
+          //System.out.println("Enrollment Successful.");
+    }
+    
+    //Remove Course or Drop Course 
+    public void dropCourse(Course c1) {
+          c.remove(c1);
+          c1.removeStudent(this);
+          //System.out.println("Course Dropped.");
+    }
+    
+    //Number of Courses enrolled in 
+    public int getNumberOfCoursesEnrolledIn() {
+          return c.size();
+    }
+    
+    //Display enrolled Courses
+    public void displayEnrolledCourses() {
+          System.out.println("Details of Courses " +stname+ " is Enrolled in : ");
+          for(int i=0; i<c.size(); i++) {
+                System.out.println();
+                System.out.println(c.get(i).toString());
+                System.out.println();
+          }
+    }
+
+}//end of Student Class
+
+
+//same reasoning for the final keyword as 'Assignment class'spackage Backend;
+
+public class TransportService extends ServiceUnit implements Schedulable{ 
+
+    private String routeName;
+    private int totalBuses;
+    
+    public TransportService() { 
+        super();
+        routeName = "Unknown";
+        totalBuses = 0; 
+    }
+    
+    public TransportService(String name, String location, int entityID, String routeName, int totalBuses) {
+        super(name, location, entityID);
+        setRouteName(routeName);
+        setTotalBuses(totalBuses);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ("\nRoute Name : " +routeName+"\nTotal Buses : " +totalBuses);
+    }
+
+    public String getRouteName() {
+        return routeName;
+    }
+
+    public final void setRouteName(String routeName) {
+        if(!routeName.isBlank()){
+            this.routeName = routeName;
+        }else{
+            this.routeName = "Unknown";
+        }
+    }
+
+    public int getTotalBuses() {
+        return totalBuses;
+    }
+
+    public final void setTotalBuses(int totalBuses) {
+        if(totalBuses > 0) {
+            this.totalBuses = totalBuses;
+        }else{
+            this.totalBuses = 0;
+        }
+    }
+    
+    //Implement Method
+    @Override
+    public void generateSchedule()
+    {
+        System.out.println("Bus  |  Departure Time  | Bus Stop");
+        System.out.println("Bus 1 | 7:45 am  | Tarlai ");
+        System.out.println("Bus 2 | 8:00 am  | Chandni Chok");
+        System.out.println("Bus 3 | 9:15 am  | Fazal Town");
+    }
+}//end of TransportService class
+package Frontend;
+
+import java.util.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import Backend.CampusData;
+import Backend.FileHandler;
+
+public class MainFrame extends JFrame {
+    //These will be used in methods
+    CampusData data;
+    FileHandler filehandler;
+
+    //(all window functions inside constructor)
+    //Segment 1: -----WINDOW SETUP------ 
+    public MainFrame(){
+        //Window Properties
+        setTitle("University Management System");
+        setSize(800, 550);
+        setLocationRelativeTo(null); //Opens screen in center
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        //File load on Window Opening
+        //data = filehandler.loadOnStartup("campusdata.dat");
+        //Save file on Window Closing
+        //We use abstract class 'WindowAdapter' that provides us with WindowListening events and abstract methods to be overriden (e.g. windowClosing, windowOpening)
+        //The following is a COMPLETE variable declaration statement
+        WindowAdapter listener = new WindowAdapter(){ 
+        @Override //JFrame method windowClosing
+        public void windowClosing(WindowEvent e)
+        {
+            //filehandler.saveToFile(data, "campusdata.dat");
+            dispose(); //closes the window
+        }
+    };
+        addWindowListener(listener);
+        //Set Visibility to True
+        setVisible(true);
+
+        //Segment 2: -----Tabs for campus entity data------ 
+        //The following creates the tab bar on the top menu of our frame
+        JTabbedPane tabs = new JTabbedPane();
+        //Individual Tabs
+        JPanel studentsPanel = new JPanel();
+        JPanel coursesPanel = new JPanel();
+        JPanel departmentsPanel = new JPanel();
+        JPanel facilitiesPanel = new JPanel();
+        JPanel servicesPanel = new JPanel();
+        //Add tabs to tab bar
+        tabs.addTab("Students", studentsPanel);
+        tabs.addTab("Courses", coursesPanel);
+        tabs.addTab("Departments", departmentsPanel);
+        tabs.addTab("Facilities", facilitiesPanel);
+        tabs.addTab("Services", servicesPanel);
+        //Set Visible
+        setVisible(true);
+        //Add the tabs to our mainframe, and we follow BorderLayout
+        add(tabs, BorderLayout.CENTER);
+
+
+}
+}
+package Frontend;
+
+public class Runner {
+    public static void main(String[] args) {
+        new MainFrame();
+    }
+    
+}

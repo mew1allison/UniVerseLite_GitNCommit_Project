@@ -5,7 +5,7 @@ import java.util.*;
 public class CampusData implements Serializable{
     //ArrayLists for campus entities
     ArrayList<Assignment> assignments = new ArrayList<>();
-    ArrayList<Student> students = new ArrayList<>();
+    public ArrayList<Student> students = new ArrayList<>();
     ArrayList<Course> courses = new ArrayList<>();
     ArrayList<Equipment> equipment = new ArrayList<>();
     ArrayList<Staff> staff = new ArrayList<>();
