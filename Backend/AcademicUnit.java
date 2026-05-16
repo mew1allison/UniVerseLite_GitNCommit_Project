@@ -1,8 +1,14 @@
 package Backend;
 import java.util.*;
+
 //Academic Unit
 public abstract class AcademicUnit extends CampusEntity{
+
+    //a unique serial id number that the JVM generates automatically. It ensures that a serializable class matches the deserialized version of that class which presevnts InvalidClassException on loading the file. 
+    //It could be changed when the hierrachy is chnaged or files are removed (major changes).
+    //Can be explicitly assigned so that older saved objects can also be loaded 
     private static final long serialVersionUID = 1L;
+
     //Data Members
     protected ArrayList<Equipment> equipment;
     protected ArrayList<Student> students;

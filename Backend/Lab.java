@@ -2,6 +2,7 @@ package Backend;
 
  //class Lab
 public class Lab extends AcademicUnit {
+
     private static final long serialVersionUID = 1L;
     //data members
     private boolean isfree;
@@ -48,8 +49,10 @@ public class Lab extends AcademicUnit {
         if(students.size() < totalcapacity){
             students.add(s);
             System.out.println("Student Added");
+
             if(students.size() == totalcapacity) {
                 isfree = false;
+                System.out.println("Class Capacity Full.");
             }
         }else{
             System.out.println("Class Capacity Full. Couldn't add Student");
@@ -75,7 +78,7 @@ public class Lab extends AcademicUnit {
             eqprice += equipment.get(i).getPrice();
         }
         
-        return ( (students.size() * 500) + eqprice); //500 is a dummt value or the expenditure per student 
+        return ( (students.size() * 5000) + eqprice); //5000 is a dummt value or the expenditure per student 
     }
     
     @Override

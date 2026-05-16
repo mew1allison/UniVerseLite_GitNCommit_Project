@@ -2,7 +2,9 @@ package Backend;
 import java.io.Serializable;
 
 public class Equipment implements Serializable {
-private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
+    
     //Data Members
     private String name;
     private int equip_ID;

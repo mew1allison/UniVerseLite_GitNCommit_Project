@@ -301,7 +301,7 @@ public class MainFrame extends JFrame {
                 }
                 //Create new Course Object
                 int creditHRS = Integer.parseInt(creditHrs);
-                Course course = new Course(crsName, crsID, creditHRS);
+                Course course = new Course(crsName, crsID, creditHRS, null);
                 //Save to Backend
                 data.courses.add(course);
                 //Display on Frontend

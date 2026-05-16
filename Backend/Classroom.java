@@ -1,11 +1,15 @@
 package Backend;
 
+import java.util.ArrayList;
 
 public class Classroom extends AcademicUnit{
+
     //data members
     private boolean isAvailable;
     private int totalcapacity;
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
+    private ArrayList<String> timeslots_booked = new ArrayList<>();
+
     //Zero argument constructir
     public Classroom(){
         super();
@@ -42,6 +46,9 @@ private static final long serialVersionUID = 1L;
         return isAvailable;
     }
     
+    public ArrayList<String> getTimeSlotsBooked() {
+        return timeslots_booked;
+    }
     
     @Override
     public void addStudent(Student s) {
@@ -52,8 +59,9 @@ private static final long serialVersionUID = 1L;
                 isAvailable = false;
             }
         }else{
-            System.out.println("Class Capacity Full. Couldn't add Student");
             isAvailable = false;
+            System.out.println("Class Capacity Full. Couldn't add Student");
+            
         }
     }
     
@@ -75,7 +83,7 @@ private static final long serialVersionUID = 1L;
             eqprice += equipment.get(i).getPrice();
         }
         
-        return ( (students.size() * 500) + eqprice); //500(dummy) is the expenditure per student 
+        return ( (students.size() * 5000) + eqprice); //5000(dummy) is the expenditure per student 
     }
     
     @Override

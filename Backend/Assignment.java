@@ -2,7 +2,9 @@ package Backend;
 import java.io.Serializable;
 
 public class Assignment implements Serializable {
+
 private static final long serialVersionUID = 1L;
+
     //attributes
     private int assignment_num;
     private int totalmarks;

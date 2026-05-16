@@ -1,10 +1,13 @@
 package Backend;
 import java.io.Serializable;
 import java.util.*;
+
 //Course Class
 
-public class Course implements Serializable {
+public class Course implements Serializable, Schedulable {
+
     private static final long serialVersionUID = 1L;
+
     //attributes
     private String courseName;
     private String courseID;
@@ -12,6 +15,9 @@ public class Course implements Serializable {
     private ArrayList <Assignment> a;
     private ArrayList <Student> s = new ArrayList<>();
     private static int totalCourses = 0;
+    private Classroom cr; //this will have the classroom assigned using schedule and reschedule methods
+    private String timeslot; //this will contain the timeslot
+    private ArrayList<Classroom> allclassrooms;
     
     //Zero Argument Constructor
     public Course(){
@@ -24,14 +30,14 @@ public class Course implements Serializable {
     }
     
     //Argument Constructor
-    public Course(String courseName, String courseID, int credithours) {
+    public Course(String courseName, String courseID, int credithours, ArrayList <Classroom> c1) {
         
         setCourseName(courseName);
         setCourseID(courseID);
         setCreditHours(credithours);
         a = new ArrayList<>();
         totalCourses++;
-        
+        this.allclassrooms = c1;
     } 
     
     //Setters
@@ -96,12 +102,12 @@ public class Course implements Serializable {
                     a.get(i).setDeadline(inp.next());
                     System.out.println("Deadline Modified");
                     isfound = true;
+                    inp.close();
             }      
         }
         if(!isfound){
               System.out.println("Could not find Assignment");
         }
-     
         
     }
     
@@ -155,14 +161,27 @@ public class Course implements Serializable {
     
     //Add Student (Register student in a course)
     public void register(Student s1) {
-          s.add(s1);
-          System.out.println("Registration Successful.");
+
+        int index = s.indexOf(s1);
+        if(index != -1) {
+            System.out.println("Student Already Enrolled.");
+        }else{
+            s.add(s1);
+            System.out.println("Registration Successful.");
+        }
     }
     
     //Remove student 
     public void removeStudent(Student s1) {
-          s.remove(s1);
-          System.out.println("Removal Successful.");
+
+        int index = s.indexOf(s1);
+        if(index != -1) {
+            s.remove(s1);
+            System.out.println("Removal Successful.");
+            
+        }else{
+            System.out.println("Could not Remove Student as Student isn't Enrolled.");
+        }
     }
     
     //Number of students enrolled in this Course
@@ -189,8 +208,72 @@ public class Course implements Serializable {
         System.out.println("Total Courses = " +totalCourses);
     }
 
-    ArrayList<Student> getStudentList() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ArrayList<Student> getStudentList() {
+        return s;
+    }
+
+    public final void setClassroom(Classroom c){
+        this.cr = c;
+    }
+    
+    public Classroom getAssignedClassroom() {
+        return cr;
+    }
+    
+    public String getTimeSlot() {
+        return timeslot;
+    }
+    
+    public final void setTime(String t) {
+        if(!t.isBlank()) {
+            this.timeslot = t;
+        }else{
+            this.timeslot = null;
+        }
+    }
+    
+    public void scheduleClass() {
+        
+        String[] times = {"8:30 - 10:00", "10:00 - 11:30", "11:30 - 1:00", "1:00 - 2:30", "2:30 - 4:00", "4:00 - 5:30" };
+        for(int i=0; i<allclassrooms.size(); i++) {
+            if(allclassrooms.get(i).getisAvailable() && allclassrooms.get(i).gettotalCapacity() >= s.size()) {
+                for(int j=0; j<times.length; j++) {
+                    if(!allclassrooms.get(i).getTimeSlotsBooked().contains(times[j])) {
+                        setTime(times[j]);
+                        setClassroom(allclassrooms.get(i));
+                        allclassrooms.get(i).getTimeSlotsBooked().add(times[j]);
+                        System.out.println("Class Assigned!");
+                        return;
+                    }
+                }
+            }
+        }
+        
+        System.out.println("No Classroom and TimeSlot Available");
+        
+    }
+    
+    @Override
+    public void generateSchedule() {
+        System.out.println("Course Class Schedule");
+        System.out.println("Course Name : " +getCourseName());
+        System.out.println("Course ID : " +getCourseID());
+        System.out.println("Credit Hours : " +getCreditHours());
+        System.out.println("Classroom : " +getAssignedClassroom().getName());
+        System.out.println("Classroom Location : " +getAssignedClassroom().getLocation());
+        System.out.println("Class TimeSlot : " +getTimeSlot());
+    }
+    
+    //avaialability needs to be set to false first of the classroom 
+    //a reschedule method if a classroom undergoes some maintenance and has availability set to false
+    public void rescheduleClasses(Classroom classroom, ArrayList<Course> c) {
+        if(classroom.getisAvailable() == false) {
+            for(int i=0; i<c.size(); i++) {
+                if(c.get(i).getAssignedClassroom() == classroom) {
+                    c.get(i).scheduleClass();
+                }
+            }
+        }
     }
     
 }//end of Course Class

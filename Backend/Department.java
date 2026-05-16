@@ -1,9 +1,12 @@
 package Backend;
 
 import java.util.*;
+
 //Department class
 public class Department extends AcademicUnit implements Reportable{
-       private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 1L;
+
     //data member
     private ArrayList<Course> courses;
     
@@ -13,20 +16,34 @@ public class Department extends AcademicUnit implements Reportable{
     }
     
     public Department(String name, String location, int entityID) {
-         super(name, location, entityID);
-         courses = new ArrayList<>();
+        super(name, location, entityID);
+        courses = new ArrayList<>();
     }
     
     //Add courses
     public void addCourse(Course c) {
-        courses.add(c);
-        System.out.println("Course Added Successfully");
+        int index = courses.indexOf(c);
+
+        if(index != -1) {
+            System.out.println("Course Already Added!");
+        }else{
+            courses.add(c);
+            System.out.println("Course Added Successfully");
+        }
+ 
     }
     
     //Remove Courses 
     public void removeCourse(Course c) {
-        courses.remove(c);
-        System.out.println("Course Removed Successfully");
+
+        int index = courses.indexOf(c);
+        if(index != -1) {
+            courses.remove(c);
+            System.out.println("Course Removed Successfully");
+        }else{
+            System.out.println("Course Removal requires Course Addition. This course isnt added.");
+        }
+
     }
     
     //total courses in the department 
