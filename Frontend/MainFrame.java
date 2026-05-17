@@ -9,20 +9,26 @@ import Backend.*;
 
 
 public class MainFrame extends JFrame {
+
     //These will be used in methods
-    CampusData data = new CampusData();
+    final CampusData data;
     FileHandler filehandler = new FileHandler();
+    User currentUser; 
 
     //(all window functions inside constructor)
     //Segment 1: -----WINDOW SETUP------ 
-    public MainFrame(){
+    public MainFrame(User currentUser, CampusData data){
+
+        this.currentUser = currentUser;
+        this.data = data;
+
         //Window Properties
         setTitle("University Management System");
         setSize(800, 550);
         setLocationRelativeTo(null); //Opens screen in center
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         //File load on Window Opening
-        data = filehandler.loadOnStartup("campusdata.dat");
+        //data = filehandler.loadOnStartup("campusdata.dat");
         //Save file on Window Closing
         //We use abstract class 'WindowAdapter' that provides us with WindowListening events and abstract methods to be overriden (e.g. windowClosing, windowOpening)
         //The following is a COMPLETE variable declaration statement
@@ -76,6 +82,22 @@ public class MainFrame extends JFrame {
         JButton enrollBtn = new JButton("Enroll Course");
         //Add Button to Display enrolled courses for Selected Student
         JButton viewEnrolledBtn = new JButton("View Courses");
+
+        //Adding checks to ensure correct accesss is granted 
+
+        if(!currentUser.grantAccess("addStudent")) {
+            addBtn.setVisible(false);
+        }
+
+        if(!currentUser.grantAccess("removeStudent")) {
+            deleteBtn.setVisible(false);
+        }
+
+        if(!currentUser.grantAccess("enrollCourse")) {
+            enrollBtn.setVisible(false);
+        }
+
+
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.add(addBtn); buttonsPanel.add(deleteBtn); buttonsPanel.add(enrollBtn); buttonsPanel.add(viewEnrolledBtn);
         //Match Labels with the Text Fields
@@ -272,6 +294,15 @@ public class MainFrame extends JFrame {
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addBtn); buttonPanel.add(deleteBtn);
 
+        //Access hecks are added 
+
+        if(!currentUser.grantAccess("addCourse")) {
+            addBtn.setVisible(false);
+        }
+
+        if(!currentUser.grantAccess("Delete Course")) {
+            deleteBtn.setVisible(false);
+        }
         //3)Create the Table
         String[] columns = {"Course Name", "Course ID", "Credit Hours"};
         DefaultTableModel model = new DefaultTableModel(columns, 0);
