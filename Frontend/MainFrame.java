@@ -64,10 +64,13 @@ public class MainFrame extends JFrame {
         JPanel panel = new JPanel(new BorderLayout());
         //Now create the submission form
         JPanel form = new JPanel();
+
         //Text Fields & Labels
         JTextField nameField = new JTextField(12);
         JTextField regField = new JTextField(12);
         JTextField programField = new JTextField(12);
+        JTextField cgpaField = new JTextField(12);
+
         //Add Button to Save the Student Info
         JButton addBtn = new JButton("Add Student");
         //Add Button to Delete a Selected Student from the Table
@@ -82,12 +85,13 @@ public class MainFrame extends JFrame {
         form.add(new Label("Student Name: ")); form.add(nameField);
         form.add(new Label("Registration #: ")); form.add(regField);
         form.add(new Label("Program: ")); form.add(programField);
+        form.add(new Label("CGPA: ")); form.add(cgpaField);
         form.add(buttonsPanel);
         
 
     //2) Create table to display student information
     //2.1)First Create the Column Names for the table
-    String[] columns = {"Name", "Reg #", "Program", "Total Courses"};
+    String[] columns = {"Name", "Reg #", "Program", "CGPA", "Total Courses"};
     DefaultTableModel model = new DefaultTableModel(columns, 0); //rows '0' since initially no entry is there
     //Create a table based on the model
     JTable table = new JTable(model);
@@ -106,6 +110,7 @@ public class MainFrame extends JFrame {
                     student.getStname(),
                     student.getRegnum(),
                     student.getProgram(),
+                    student.getCGPA(),
                     student.getCourseList().size()
                 });
             }
@@ -119,6 +124,9 @@ public class MainFrame extends JFrame {
             String stName = nameField.getText().trim();
             String regNo = regField.getText().trim();
             String program = programField.getText().trim();
+            double cgpa = Double.valueOf(cgpaField.getText().trim());
+
+
             //First Check if user has typed anything or its empty
             if(stName.isEmpty() || regNo.isEmpty() || program.isEmpty())
             {
@@ -126,14 +134,15 @@ public class MainFrame extends JFrame {
                 return;
             }
             //Create a new Student object (we store it in our backend)
-            Student s = new Student(stName, regNo, program);
+            Student s = new Student(stName, regNo, program, cgpa);
             data.students.add(s);
             //Now add this student to our table and display on interface
-            model.addRow(new Object[]{stName, regNo, program});
+            model.addRow(new Object[]{stName, regNo, program, cgpa, 0});
             //Clear Fields after adding
             nameField.setText("");
             regField.setText("");
             programField.setText("");
+            cgpaField.setText("");
         }
     });
 
@@ -203,7 +212,7 @@ public class MainFrame extends JFrame {
             data.students.get(index).enroll(pickedCourse);
 
             //Update the Total Courses cell in the Table (new value, row, column)
-            model.setValueAt(selectedStudent.getCourseList().size(), selectedRow, 3);
+            model.setValueAt(selectedStudent.getCourseList().size(), selectedRow, 4);
             JOptionPane.showMessageDialog(panel, "Student Enrolled Successfully!");
         }
 
@@ -301,7 +310,7 @@ public class MainFrame extends JFrame {
                 }
                 //Create new Course Object
                 int creditHRS = Integer.parseInt(creditHrs);
-                Course course = new Course(crsName, crsID, creditHRS, null);
+                Course course = new Course(crsName, crsID, creditHRS, null); //check it 
                 //Save to Backend
                 data.courses.add(course);
                 //Display on Frontend

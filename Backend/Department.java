@@ -95,12 +95,44 @@ public class Department extends AcademicUnit implements Reportable{
         return cost;
     }
 
+    private String calculatingperformance() {
+        
+        double total_cgpa = 0;
+        int totalstudentsenrolledincourse = 0;
+        //loop through all courses present in a DEPARTMENT
+        for(int i=0; i<courses.size(); i++) {
+            
+            ArrayList <Student> enrolled = courses.get(i).getStudentList();
+            for(int j=0; j<enrolled.size(); j++) {
+                total_cgpa += enrolled.get(j).getCGPA();
+            totalstudentsenrolledincourse++;
+            }
+        
+        }
+
+        double average_cgpa = total_cgpa / totalstudentsenrolledincourse;
+        if( average_cgpa >= 3.67) {
+            return "Excellent";
+        }else if(average_cgpa >= 3.00) {
+            return "Great";
+        }else if(average_cgpa >= 2.34) {
+            return "Average. Needs Improvement";
+        }else if(average_cgpa >= 2.00) {
+            return "Baseline Performance. Focus on Managing Academics Required.";
+        }else{
+            return "Weak. Attention on Managing Academics Required.";
+        }   
+    }
+
+
+
     @Override
     public void generateReport() {
         System.out.println("DEPARTMENT PERFORMANCE REPORT");
         System.out.println(this.toString());
         System.out.println("Total Equipments : " +equipment.size());
         System.out.println("Operational Cost : " +calculateOperationalCost());
+        System.out.println("Performance : " +calculatingperformance());
     }
 
 }//end of Department class 

@@ -8,7 +8,8 @@ public class Student implements Serializable{
     //attributes
     private String stname; //Student name;
     private String regnum; //FA25-BCS-005 format
-    private String program; //Computer Science 
+    private String program; //Computer Science
+    private double cgpa; 
     private ArrayList <Course> c = new ArrayList<>();
     private static int totalStudents = 0;
 
@@ -18,16 +19,18 @@ public class Student implements Serializable{
         stname = "Unknown";
         regnum = "No Registration Number Assigned";
         program = "Unknown";
+        cgpa = 0;
         totalStudents++;
 
     }
 
     //Argument Constructor
-    public Student (String stname, String regnum, String program) {
+    public Student (String stname, String regnum, String program, double cgpa) {
 
         setStname(stname);
         setRegnum(regnum);
         setProgram(program);
+        setCGPA(cgpa);
         totalStudents++;
 
     }
@@ -63,6 +66,15 @@ public class Student implements Serializable{
 
     }
 
+    public final void setCGPA(double cgpa) {
+
+        if(cgpa > 0 && cgpa <= 4.00) {
+            this.cgpa = cgpa;
+        }else{
+            this.cgpa = 0.00;
+        }
+    }
+
     //Getters
     public String getStname() {
         return stname;
@@ -74,6 +86,10 @@ public class Student implements Serializable{
 
     public String getProgram() {
         return program;
+    }
+
+    public double getCGPA() {
+        return cgpa;
     }
     
     public static int getTotalStudents() {
@@ -91,7 +107,7 @@ public class Student implements Serializable{
     //Display Info
     @Override
     public String toString() {
-          return ("Student Name : " +stname+"\nRegistration Number : " +regnum+"\nProgram : " +program);
+          return ("Student Name : " +stname+"\nRegistration Number : " +regnum+"\nProgram : " +program+"\nCGPA : " +cgpa);
     }
     
     //Register in course 
