@@ -345,228 +345,222 @@ public class MainFrame extends JFrame {
         return panel;
         
     }
-    //---------Create the Department Tab Contents--------
-    //This panel will have sub panels, classroom and lab
-    //---------Create the Facilities Tab Contents--------
-    //This panel will have sub panels, cafe, library and hostel
-    private JPanel buildFacilityPanel()
-    {
-        //First we build the main panel
+    // ══════════════════════════════════════════════════════════════════════
+    // SEGMENT 4 — FACILITIES TAB (inner tabs for Library, Cafeteria, Hostel)
+    // ══════════════════════════════════════════════════════════════════════
+    private JPanel buildFacilityPanel() {
+ 
         JPanel panel = new JPanel(new BorderLayout());
-        //Create inner tabs using Jtabbedpane
+ 
+        // Inner tab bar nested inside the Facilities tab
         JTabbedPane innerTabs = new JTabbedPane();
-        innerTabs.addTab("Library",  buildLibraryPanel());
+        innerTabs.addTab("Library",   buildLibraryPanel());
         innerTabs.addTab("Cafeteria", buildCafeteriaPanel());
         innerTabs.addTab("Hostel",    buildHostelPanel());
+ 
         panel.add(innerTabs, BorderLayout.CENTER);
         return panel;
-
     }
-    //Library SubPanel
+ 
+    // ══════════════════════════════════════════════════════════════════════
+    // SEGMENT 5 — LIBRARY SUB-TAB
+    // ══════════════════════════════════════════════════════════════════════
     private JPanel buildLibraryPanel() {
-
-    JPanel panel = new JPanel(new BorderLayout());
-    //Text Fields for adding books
-    JPanel form = new JPanel(new BorderLayout());
-    JPanel textfields = new JPanel();
-    JTextField bookNameField   = new JTextField(10);
-    JTextField authorField     = new JTextField(10);
-    JTextField editionField    = new JTextField(6);
-    textfields.add(new Label("Book Name: ")); textfields.add(bookNameField);
-    textfields.add(new Label("Author:")); textfields.add(authorField);
-    textfields.add(new Label("Edition:")); textfields.add(editionField);
-
-    form.add(textfields, BorderLayout.WEST);
-    // ── BUTTONS ──
-    JButton addBookBtn      = new JButton("Add Book");
-    JButton deleteBookBtn   = new JButton("Delete Book");
-    JButton opCostBtn       = new JButton("Show Operational Cost"); // calculateOperationalCost()
-
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.add(addBookBtn);
-    buttonPanel.add(deleteBookBtn);
-    form.add(buttonPanel, BorderLayout.EAST);
-
-    // ── TABLE: shows all books in the library ─
-    String[] columns = {"Book Name", "Author", "Edition", "Available"};
-    DefaultTableModel model = new DefaultTableModel(columns, 0);
-    JTable table   = new JTable(model);
-    JScrollPane scrollPane = new JScrollPane(table);
-
-    //Present existing books
-     if (data.library != null) {
-
-        if(data.library.getBooks() != null && !data.library.getBooks().isEmpty()) {
+ 
+        JPanel panel = new JPanel(new BorderLayout());
+        JPanel form  = new JPanel();
+ 
+        JTextField bookNameField = new JTextField(10);
+        JTextField authorField   = new JTextField(10);
+        JTextField editionField  = new JTextField(6);
+ 
+        form.add(new JLabel("Book Name:")); form.add(bookNameField);
+        form.add(new JLabel("Author:"));    form.add(authorField);
+        form.add(new JLabel("Edition:"));   form.add(editionField);
+ 
+        JButton addBookBtn    = new JButton("Add Book");
+        JButton deleteBookBtn = new JButton("Delete Book");
+        JButton opCostBtn     = new JButton("Show Op. Cost");
+ 
+        JPanel btnPanel = new JPanel();
+        btnPanel.add(addBookBtn); btnPanel.add(deleteBookBtn);
+        btnPanel.add(opCostBtn);
+        form.add(btnPanel);
+ 
+        // Columns matching Books attributes
+        String[] columns = {"Book Name", "Author", "Edition", "Available"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0);
+        JTable table   = new JTable(model);
+        JScrollPane sp = new JScrollPane(table);
+ 
+        // ── LOAD BOOKS FROM FILE ──────────────────────────────────────────
+        // data.library.getBooks() returns the b1 ArrayList inside Library
+        if (data.library != null && data.library.getBooks() != null
+                && !data.library.getBooks().isEmpty()) {
             for (int i = 0; i < data.library.getBooks().size(); i++) {
                 Books b = data.library.getBooks().get(i);
                 model.addRow(new Object[]{
                     b.getBookName(),
                     b.getAuthorName(),
                     b.getEdition(),
-                    b.getAvailability() // true/false shows as "true"/"false" in table
+                    b.getAvailability() // true = available, false = borrowed
                 });
             }
         }
+ 
+        // ── ADD BOOK ──────────────────────────────────────────────────────
+        addBookBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String bName   = bookNameField.getText().trim();
+                String author  = authorField.getText().trim();
+                String edition = editionField.getText().trim();
+ 
+                if (bName.isEmpty() || author.isEmpty() || edition.isEmpty()) {
+                    JOptionPane.showMessageDialog(panel, "Please fill all book fields.");
+                    return;
+                }
+ 
+                Books book = new Books(bName, author, edition);
+                data.library.add(book); 
+ 
+                model.addRow(new Object[]{bName, author, edition, true});
+ 
+                bookNameField.setText(""); authorField.setText(""); editionField.setText("");
+            }
+        });
+ 
+        // ── DELETE BOOK ───────────────────────────────────────────────────
+        deleteBookBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(panel, "Please select a book first.");
+                    return;
+                }
+                // Get the actual Books object from library and remove it
+                Books book = data.library.getBooks().get(selectedRow);
+                data.library.remove(book); 
+                model.removeRow(selectedRow);
+            }
+        });
+ 
+        // ── OPERATIONAL COST ──────────────────────────────────────────────
+        // calculateOperationalCost() is already written in Library
+        opCostBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double cost = data.library.calculateOperationalCost();
+                JOptionPane.showMessageDialog(panel,
+                    "Library Operational Cost : Rs. " + cost,
+                    "Operational Cost", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+ 
+        panel.add(form, BorderLayout.NORTH);
+        panel.add(sp,   BorderLayout.CENTER);
+        return panel;
     }
-    // Button Functionalities
-    addBookBtn.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String bName   = bookNameField.getText().trim();
-            String author  = authorField.getText().trim();
-            String edition = editionField.getText().trim();
-
-            // Check empty fields
-            if (bName.isEmpty() || author.isEmpty() || edition.isEmpty()) {
-                JOptionPane.showMessageDialog(panel, "Please fill all book fields.");
-                return;
-            }
-
-            // Create Books object 
-            Books book = new Books(bName, author, edition);
-
-            // If no library exists yet, create one first
-            if (data.library == null) {
-                // Library(name, location, entityID, maintenance_cost, usage_frequency)
-                Library lib = new Library("Main Library", "Block C", 301, 5000, 100);
-                data.library = lib;
-            }
-            // Add to table
-            model.addRow(new Object[]{bName, author, edition, true});
-            //Add to backend
-            data.library.add(book);
-
-            // Clear fields
-            bookNameField.setText("");
-            authorField.setText("");
-            editionField.setText("");
-        }
-    });
-    // ── DELETE BOOK BUTTON ──
-    deleteBookBtn.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(panel, "Please select a book first.");
-                return;
-            }
-            // Remove from backend library
-            data.library.getBooks().remove(selectedRow);
-            // Remove from table
-            model.removeRow(selectedRow);
-        }
-    });
-    //Show Operational Cost button
-    opCostBtn.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (data.library == null) {
-                JOptionPane.showMessageDialog(panel, "No library data found.");
-                return;
-            }
-            double cost = data.library.calculateOperationalCost();
-            // Show result in a simple popup
-            JOptionPane.showMessageDialog(panel,
-                "Library Operational Cost : Rs. " + cost,
-                "Operational Cost", JOptionPane.INFORMATION_MESSAGE);
-        }
-    });
-    panel.add(form, BorderLayout.NORTH);
-    panel.add(scrollPane, BorderLayout.CENTER);
-    panel.add(opCostBtn, BorderLayout.SOUTH);
-    return panel;
-    }
-
-    //Build Cafeteria Panel
+ 
+    // ══════════════════════════════════════════════════════════════════════
+    // SEGMENT 6 — CAFETERIA SUB-TAB (static — single cafeteria, fixed menu)
+    // ══════════════════════════════════════════════════════════════════════
     private JPanel buildCafeteriaPanel() {
-
-    // Main panel
-    JPanel panel = new JPanel(new BorderLayout());
-    JPanel infoPanel = new JPanel();
-    infoPanel.add(new JLabel("Main Cafeteria  |  Location: Block E  |  Food Items: 20  |  Avg Meal Cost: Rs.250"));
-    panel.add(infoPanel, BorderLayout.NORTH);
-
-    // ── STATIC MENU TABLE ───
-    String[] columns = {"#", "Menu Item", "Price (Rs.)"};
-    DefaultTableModel model = new DefaultTableModel(columns, 0);
-    JTable table   = new JTable(model);
-    JScrollPane scrollPane = new JScrollPane(table);
-
-    model.addRow(new Object[]{"1", "Biryani",        "150"});
-    model.addRow(new Object[]{"2", "Daal Chawal",    "100"});
-    model.addRow(new Object[]{"3", "Chicken Karahi", "200"});
-    model.addRow(new Object[]{"4", "Paratha",         "30"});
-    model.addRow(new Object[]{"5", "Omelette",        "50"});
-    model.addRow(new Object[]{"6", "Tea",             "20"});
-    model.addRow(new Object[]{"7", "Cold Drink",      "60"});
-
-    // ── OPERATIONAL COST BUTTON ───
-    //First we create a dummy cafeteria object
-    Cafeteria cafeteria = new Cafeteria("Main Cafeteria", "E-Block", 221, 5000, 30, 20, 250);
-    data.cafeteria = cafeteria;
-    JButton opCostBtn = new JButton("Show Operational Cost");
-    opCostBtn.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            double cost = data.cafeteria.calculateOperationalCost();
-            JOptionPane.showMessageDialog(panel,
-                "Cafeteria Operational Cost : Rs. " + cost,
-                "Operational Cost", JOptionPane.INFORMATION_MESSAGE);
-        }
-    });
-
-    panel.add(scrollPane, BorderLayout.CENTER);
-    panel.add(opCostBtn,  BorderLayout.SOUTH);
-    return panel;
-}
-    //Create Hostel Panel
-    private JPanel buildHostelPanel(){
-     // Main panel
-    JPanel panel = new JPanel(new BorderLayout());
-    JPanel infoPanel = new JPanel();
-    infoPanel.add(new JLabel("HOSTELS"));
-    panel.add(infoPanel, BorderLayout.NORTH);
-
-    String[] columns = {"#", "Hostel Name", "Hostel Location", "Total Rooms"};
-    DefaultTableModel model = new DefaultTableModel(columns, 0);
-    JTable table   = new JTable(model);
-    JScrollPane scrollPane = new JScrollPane(table);
-
-    //Create some static hostels
-    //public Hostel(String name, String location, int entityID, double maintenance_cost, double usage_frequency, int totalroom)
-    Hostel hostel = new Hostel("Boys Hostel", "Wah Cantt", 101, 3000, 50, 25);
-    Hostel hostel2 = new Hostel("Girls Hostel", "Hostel City", 102, 3000, 50, 25);
-    Hostel hostel3 = new Hostel("International Hostel", "University Campus", 102, 5000, 50, 25);
-    //Save hostels to campus Data
-    data.hostels.add(hostel); data.hostels.add(hostel2); data.hostels.add(hostel3);
-
-    model.addRow(new Object[]{"1", hostel.getName(), hostel.getLocation(), hostel.getTotalRooms()});
-    model.addRow(new Object[]{"2", hostel2.getName(), hostel2.getLocation(), hostel2.getTotalRooms()});
-    model.addRow(new Object[]{"3", hostel3.getName(), hostel3.getLocation(), hostel3.getTotalRooms()});
-
-    // ── OPERATIONAL COST BUTTON ───
-    JButton opCostBtn = new JButton("Show Operational Cost");
-    opCostBtn.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //Calculate net cost for all hostels
-            double cost = 0;
-            for(int i = 0; i < data.hostels.size(); i++)
-            {
-                cost += data.hostels.get(i).calculateOperationalCost();
+ 
+        JPanel panel = new JPanel(new BorderLayout());
+ 
+        JPanel infoPanel = new JPanel();
+        infoPanel.add(new JLabel(
+            "Main Cafeteria  |  Location: Block E  |  Food Items: 20  |  Avg Meal Cost: Rs.250"
+        ));
+        panel.add(infoPanel, BorderLayout.NORTH);
+ 
+        String[] columns = {"#", "Menu Item", "Price (Rs.)"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0);
+        JTable table   = new JTable(model);
+        JScrollPane sp = new JScrollPane(table);
+ 
+        // Fixed menu rows — no backend needed for these
+        model.addRow(new Object[]{"1", "Biryani",        "150"});
+        model.addRow(new Object[]{"2", "Daal Chawal",    "100"});
+        model.addRow(new Object[]{"3", "Chicken Karahi", "200"});
+        model.addRow(new Object[]{"4", "Paratha",         "30"});
+        model.addRow(new Object[]{"5", "Omelette",        "50"});
+        model.addRow(new Object[]{"6", "Tea",             "20"});
+        model.addRow(new Object[]{"7", "Cold Drink",      "60"});
+ 
+        // Operational cost button — calls backend method
+        JButton opCostBtn = new JButton("Show Operational Cost");
+        JPanel btnPanel = new JPanel();
+        btnPanel.add(opCostBtn);
+        opCostBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                double cost = data.cafeteria.calculateOperationalCost();
+                JOptionPane.showMessageDialog(panel,
+                    "Cafeteria Operational Cost : Rs. " + cost,
+                    "Operational Cost", JOptionPane.INFORMATION_MESSAGE);
             }
-            JOptionPane.showMessageDialog(panel,
-                "Cafeteria Operational Cost : Rs. " + cost,
-                "Operational Cost", JOptionPane.INFORMATION_MESSAGE);
-        }
-    });
-
-    panel.add(scrollPane, BorderLayout.CENTER);
-    panel.add(opCostBtn,  BorderLayout.SOUTH);
-    return panel;
-}
-
+        });
+ 
+        panel.add(sp,         BorderLayout.CENTER);
+        panel.add(btnPanel,  BorderLayout.SOUTH);
+        return panel;
+    }
+ 
+    // ══════════════════════════════════════════════════════════════════════
+    // SEGMENT 7 — HOSTEL SUB-TAB (static — single hostel, room status table)
+    // ══════════════════════════════════════════════════════════════════════
+    private JPanel buildHostelPanel() {
+ 
+        JPanel panel = new JPanel(new BorderLayout());
+ 
+        // Static info label at top
+        JPanel infoPanel = new JPanel();
+        infoPanel.add(new JLabel(
+            "HOSTELS"));
+        panel.add(infoPanel, BorderLayout.NORTH);
+ 
+        String[] columns = {"#", "Hostel Name", "Total Rooms"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0);
+        JTable table   = new JTable(model);
+        JScrollPane sp = new JScrollPane(table);
+ 
+        // ── BUTTONS ───────────────────────────────────────────────────────
+        JButton opCostBtn = new JButton("Show Operational Cost");
+        JPanel btnPanel = new JPanel();
+        btnPanel.add(opCostBtn);
+ 
+        // ── OPERATIONAL COST ──────────────────────────────────────────────
+        //Create dummy hostels
+        Hostel hostel1 = new Hostel("AliGarh Hostel", "Chak Faisal", 131, 5000, 50, 25);
+        Hostel hostel2 = new Hostel("Shalimar Hostel", "Chak Shahzad", 132, 5000, 50, 20);
+        Hostel hostel3 = new Hostel("Chachu Hostel", "Chak Kharian", 133, 5000, 50, 25);
+        data.hostels.add(hostel1); data.hostels.add(hostel2); data.hostels.add(hostel3);
+        //Add to the table
+        model.addRow(new Object[]{hostel1.getName(), hostel1.getLocation(), hostel1.getTotalRooms()});
+        model.addRow(new Object[]{hostel2.getName(), hostel2.getLocation(), hostel2.getTotalRooms()});
+        model.addRow(new Object[]{hostel3.getName(), hostel3.getLocation(), hostel3.getTotalRooms()});
+        
+        opCostBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               double cost = 0;
+               for(int i = 0; i < data.hostels.size(); i++)
+               {
+                    cost += data.hostels.get(i).calculateOperationalCost();
+               }
+                JOptionPane.showMessageDialog(panel,
+                    "Hostel Operational Cost : Rs. " + cost,
+                    "Operational Cost", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+ 
+        panel.add(sp,       BorderLayout.CENTER);
+        panel.add(btnPanel, BorderLayout.SOUTH);
+        return panel;
+    }
 }
 
 

@@ -1,12 +1,14 @@
 package Backend;
+
 //class HealthCenter
 public class HealthCenter extends ServiceUnit implements Notifiable{
+
 private static final long serialVersionUID = 1L;
     private int doctorsAvailable;
     
     public HealthCenter() {
-         super(); 
-         doctorsAvailable = 0; 
+        super(); 
+        doctorsAvailable = 0; 
     }
     
     public HealthCenter(String name, String location, int entityID, int doctorsAvailable) {
@@ -14,9 +16,14 @@ private static final long serialVersionUID = 1L;
         setDoctorsAvailable(doctorsAvailable);
     }
 
+    public void medicalEmergency(String message, SecurityService s) {
+        this.sendNotification("MEDICAL EMERGENCY REPORTED!!");
+        s.sendNotification("MEDICAL EMERGENCY REPORTED!");
+    } 
+
     @Override
     public void sendNotification(String message) {
-        System.out.println("Notification !");
+        System.out.println("NOTIFICATION !");
         System.out.println(message);
     }
 
@@ -35,7 +42,6 @@ private static final long serialVersionUID = 1L;
         }else{
             this.doctorsAvailable = 0;
         }
-        
     }
 
 }//end of HealthCenter class

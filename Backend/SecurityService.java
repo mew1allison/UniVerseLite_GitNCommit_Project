@@ -29,7 +29,7 @@ public class SecurityService extends ServiceUnit implements  Notifiable{
     
     @Override
     public void sendNotification(String message) {
-        System.out.println("Notification !");
+        System.out.println("NOTIFICATION !");
         System.out.println(message);
     }
     
