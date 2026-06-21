@@ -23,7 +23,7 @@ private static final long serialVersionUID = 1L;
       
     //Setters
     public final void setFoodItems(int fooditems) {
-            if(fooditems > 1) {
+            if(fooditems >= 1) {
                   this.fooditems = fooditems;
             }else{
                   this.fooditems = 1;
