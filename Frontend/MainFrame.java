@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
             deleteBtn.setVisible(false);
         }
 
-        if(!currentUser.grantAccess("enrollCourse")) {
+        if(currentUser.grantAccess("enrollCourse")) {
             enrollBtn.setVisible(true);
         }
 
