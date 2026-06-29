@@ -88,7 +88,7 @@ public class LoginFrame extends JFrame {
 
                 for(int i=0; i<data.users.size(); i++) {
                     User user = data.users.get(i);
-                    if(user.getUsername().equals(username) && user.getPassword().equals(pass)) {
+                    if(user.getUsername().equals(username) && user.verifyPassword(pass)) {
 
                         UserSession.getInstance().login(user);
                         JOptionPane.showMessageDialog(mainPanel, "Login Successful");
