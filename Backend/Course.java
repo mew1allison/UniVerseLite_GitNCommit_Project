@@ -113,9 +113,10 @@ public class Course implements Serializable, Schedulable {
         boolean isfound = false;
         for(int i=0; i<a.size(); i++) {
             if(a.get(i).getAssignmentNum() == num) {
-                  this.a.remove(a.get(i));
+                  a.remove(i); //remove by index instead of passing whole object
                   System.out.println("Assignment Removed Successfully.");
                   isfound = true;
+                  i--; // decreasing i to make sure no element is skipped. it checks the new left shifted element.
             }      
         }
         if(!isfound){
