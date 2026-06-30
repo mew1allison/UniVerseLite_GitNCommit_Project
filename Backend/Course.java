@@ -251,15 +251,20 @@ public class Course implements Serializable, Schedulable {
     }
     
     @Override
-    public void generateSchedule() {
-        System.out.println("Course Class Schedule");
-        System.out.println("Course Name : " +getCourseName());
-        System.out.println("Course ID : " +getCourseID());
-        System.out.println("Credit Hours : " +getCreditHours());
-        System.out.println("Classroom : " +getAssignedClassroom().getName());
-        System.out.println("Classroom Location : " +getAssignedClassroom().getLocation());
-        System.out.println("Class TimeSlot : " +getTimeSlot());
+public void generateSchedule() {
+    if (getAssignedClassroom() == null) {
+        System.out.println("Schedule cannot be generated because no classroom has been assigned.");
+        return;
     }
+
+    System.out.println("Course Class Schedule");
+    System.out.println("Course Name : " + getCourseName());
+    System.out.println("Course ID : " + getCourseID());
+    System.out.println("Credit Hours : " + getCreditHours());
+    System.out.println("Classroom : " + getAssignedClassroom().getName());
+    System.out.println("Classroom Location : " + getAssignedClassroom().getLocation());
+    System.out.println("Class TimeSlot : " + getTimeSlot());
+}
     
     //avaialability needs to be set to false first of the classroom 
     //a reschedule method if a classroom undergoes some maintenance and has availability set to false
